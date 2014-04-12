@@ -1,0 +1,4 @@
+name: Mymodule
+description: Test module created for the Modes and Formatters session.
+type: module
+core: 8.x
