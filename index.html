@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>View modes and field formatters</title>
+
+    <meta name="author" content="Jesus Sanchez Balsera">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"/>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+        document.write('<link rel="stylesheet" href="css/print/' + ( window.location.search.match(/print-pdf/gi) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div id="cocomore"><a href="http://www.cocomore.com"><img
+        src="images/cocomore.png" alt="Cocomore AG"/></a></div>
+
+<div id="event"><img src="images/logoff.png" alt="Event" /><div class="text"><div>Drupalcamp</div><div class="location">Frankfurt</div></div><div class="year">2014</div></div>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+
+<section data-state="first">
+    <h1>Modes and Formatters</h1>
+
+    <h3>DrupalCamp Frankfurt 2014</h3>
+
+    <p>
+        <small>By Jesús Sanchez Balsera</small>
+    </p>
+</section>
+
+<section>
+    <section>
+        <h2>Your speaker today</h2>
+
+        <p>
+            <strong>@jsbalsera</strong> (Drupal.org, Twitter, etc.)
+        </p>
+
+        <p><img width="350" src="images/jsbalsera.jpg"></p>
+    </section>
+    <section>
+        <h3>What else?</h3>
+        <ul>
+            <li class="fragment" data-fragment-index="0">Working at <img
+                    src="images/cocomore.png"/></li>
+            <li class="fragment" data-fragment-index="1">A couple of years working with Drupal.
+            </li>
+            <li class="fragment" data-fragment-index="2">Some other years working with
+                PHP: Code Igniter, Cake PHP, home-made frameworks...
+            </li>
+        </ul>
+    </section>
+    <aside class="notes">
+        Oh hey, these are some notes. They'll be hidden in your presentation,
+        but you can see them if you open the speaker notes window (hit 's' on
+        your keyboard).
+    </aside>
+</section>
+
+<section>
+    <h2>What this will be about?</h2>
+    <ul>
+        <li>Showing content can be messy.</li>
+    </ul>
+</section>
+
+<section>
+    <img src="images/messy-cart.jpg"/>
+    Look at me, ma'! I'm drupaling!
+</section>
+
+<section>
+    <h2>What this will be about?</h2>
+    <ul>
+        <li>Showing content can be messy.</li>
+        <li>Backend and frontend didn't about who has to do some things.</li>
+        <li>hook_node_view, templates, preprocess functions...</li>
+        <li>Not to talk about Display Suite, Panels...</li>
+    </ul>
+</section>
+
+<section>
+    <img src="images/ohmy.png"/>
+    What can I do?
+</section>
+
+<section>
+    <img src="images/article.png"/>
+    Article node type fields.
+</section>
+
+<section>
+    <section>
+        <h2>Dirty things</h2>
+    </section>
+
+    <section>
+        <h3>hook_preprocess_page</h3>
+        <pre><code>
+  if (isset($var['node'])) {
+    $node = $var['node'];
+  }
+  elseif (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) !== 'edit') {
+    $node = node_load(arg(1));
+  }
+
+  if (isset($node) && isset($node->type) && $node->type == 'article') {
+  }
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>hook_node_view</h3>
+        <pre><code>
+  if (!empty($node) && "article" == $node->type) {
+    if (arg(0) == 'node') {
+       unset($node->content['field_integers']);
+    }
+  }
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Logic in the template files</h3>
+        <p>I won't show examples of that.</p>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h2>View Modes</h2>
+        <img src="images/articles_modes_1.png"/>
+        admin/structure/types/manage/article/display
+    </section>
+    <section>
+        <h2>
+            View Modes
+        </h2>
+        <img src="images/articles_modes_2.png"/>
+    </section>
+    <section>
+        <h2>
+            View Modes
+        </h2>
+    <pre><code>
+function mymodule_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes'] += array(
+    'example_mode' => array(
+      'label' => t('Example view mode'),
+      'custom settings' => TRUE,
+    )
+  );
+}
+    </code></pre>
+        Don't forget to clear the cache...
+    </section>
+    <section>
+        <h2>View Modes</h2>
+        <img src="images/articles_modes_3a.png"/>
+        <img src="images/articles_modes_3b.png"/>
+    </section>
+    <section>
+        <h2>View Modes</h2>
+        <img src="images/articles_modes_3c.png"/>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h2>Using View Modes: Views.</h2>
+        <img src="images/views_1.png"/>
+    </section>
+    <section>
+        <h2>Using View Modes: Views.</h2>
+        <img src="images/views_2.png"/>
+    </section>
+    <section>
+        <h2>Using View Modes: Nodeblock.</h2>
+        <img src="images/nodeblock.png"/>
+    </section>
+    <section>
+        <h2>Using View Modes: Entity Reference.</h2>
+        <img src="images/reference_1.png"/>
+    </section>
+</section>
+
+<section>
+    <h2>Styling the view mode</h2>
+    <pre><code>
+function hook_theme_preprocess_node(&$vars) {
+  $vars['theme_hook_suggestions'][] = 'node__' . $vars['view_mode'];
+  $vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] .
+    '__' . $vars['view_mode'];
+}
+    </code></pre>
+</section>
+
+<section>
+  <section>
+    <h3>How to hide title and submit information?</h3>
+        <ul>
+            <li class="fragment" data-fragment-index="0">Using a custom template.</li>
+            <li class="fragment" data-fragment-index="1"><img src="images/philosoraptor.jpg" /></li>
+        </ul>
+  </section>
+  <section>
+      Using extra-fields. <br /><a href="https://github.com/timcosgrove/extra_fields">https://github.com/timcosgrove/extra_fields</a>
+  </section>
+  <section>
+      <img src="images/extra-fields-1.png" />
+  </section>
+  <section>
+      <img src="images/extra-fields-2.png" />
+  </section>
+</section>
+
+<section>
+    <h3>Making your life easier</h3>
+    <ul>
+        <li><strong>Entity view modes:</strong> UI to define custom view modes for entities, adding template suggestions.</li>
+        <li><strong>Display suite</strong> Much more functionality... and complexity.</li>
+    </ul>
+</section>
+
+<section>
+    <section>
+        <h2>Formatters</h2>
+        Field formatters specify how fields are displayed.
+    </section>
+    <section>
+        <h2>Formatters</h2>
+        <img src="images/formatters-1.png" />
+    </section>
+    <section>
+        <h2>Formatters</h2>
+        Only <strong>TWO</strong> hooks are mandatory (although there are more):
+        <ul>
+            <li>
+                hook_field_formatter_info
+            </li>
+            <li>
+                hook_field_formatter_view
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>Formatters</h2>
+        There are others really interesting:
+        <ul>
+            <li>
+                hook_formatter_settings_form
+            </li>
+            <li>
+                hook_field_formatter_settings_summary
+            </li>
+        </ul>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h3>Showing only one item.</h3>
+        <pre><code>
+function mymodule_field_formatter_info() {
+  return array(
+    'mymodule_only_one' => array(
+      'label' => t('Only one item'),
+      'description' => t('Displays only the first item of a multievaluated one'),
+      'field types' => array('number_integer', 'number_decimal', 'number_float'),
+      'settings' => array(),
+    ),
+  );
+}
+        </code></pre>
+    </section>
+    <section>
+        <h3>Showing only one item.</h3>
+        <img src="images/formatters-onlyone-1.png" />
+    </section>
+
+    <section>
+        <h3>Showing only one item.</h3>
+        <pre><code>
+function mymodule_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  if ($items) {
+    switch ($display['type']) {
+      case 'mymodule_only_one':
+        $item = array_shift($items);
+
+        $element[0] = array('#markup' => $item['value']);
+        break;
+    }
+  }
+
+  return $element;
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Showing only one item.</h3>
+        <img src="images/formatters-onlyone-2.png" />
+    </section>
+</section>
+
+<section>
+    <section>
+        <h3>Adding the items.</h3>
+        <pre><code>
+function mymodule_field_formatter_info() {
+  return array(
+    'mymodule_addition' => array(
+      'label' => t('Addition Formatter'),
+      'description' => t('Displays the result of the addition of all the field items'),
+      'field types' => array('number_integer', 'number_decimal', 'number_float'),
+      'settings' => array(),
+    ),
+  );
+}
+        </code></pre>
+    </section>
+    <section>
+        <h3>Adding the items.</h3>
+        <img src="images/formatters-addition-1.png" />
+    </section>
+
+    <section>
+        <h3>Adding the items.</h3>
+        <pre><code>
+function mymodule_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  if ($items) {
+    switch ($display['type']) {
+      case 'mymodule_addition':
+        $result = 0;
+        foreach ($items as $item) {
+          $result += $item['value'];
+        }
+
+        $element[0] = array('#markup' => $result);
+        break;
+    }
+  }
+
+  return $element;
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Adding the items.</h3>
+        <img src="images/formatters-addition-2.png" />
+    </section>
+</section>
+
+<section>
+    <section>
+        <h3>Formatter with settings and summary.</h3>
+        <pre><code>
+// hook_field_formatter_info
+'mymodule_headline' => array(
+  'label' => t('Headline'),
+  'descriptions' => t('Display a headline as a Hx (H1, H2, H3...) HTML tag'),
+  'field types' => array('text'),
+  'settings' => array(
+    'headline_type' => 'H3',
+  ),
+),
+        </code></pre>
+    </section>
+
+    <section>
+
+<pre><code>function mymodule_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element = array();
+
+  if ($display['type'] == 'mymodule_headline') {
+    $element['headline_type'] = array(
+      '#title' => t('Headline Type'),
+      '#type' => 'select',
+      '#default_value' => $settings['headline_type'],
+      '#options' => array(
+        'H1' => 'H1', 'H2' => 'H2', 'H3' => 'H3',
+      ),
+      '#required' => TRUE,
+    );
+  }
+
+  return $element;
+}</code></pre>
+    </section>
+
+    <section>
+<pre><code>function mymodule_field_formatter_settings_summary($field, $instance, $view_mode){
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = '';
+
+  if ($display['type'] == 'mymodule_headline') {
+    $summary = t('Type: <strong>@headline_type</strong>', array(
+       '@headline_type' => $settings['headline_type']));
+  }
+
+  return $summary;
+}</code></pre>
+    </section>
+
+    <section>
+        <img src="images/headline-1.png" />
+    </section>
+
+    <section>
+<pre><code>// hook_field_formatter_view().
+case 'mymodule_headline':
+  $tag = $display['settings']['headline_type'];
+  if (!in_array($tag, array('H1', 'H2', 'H3'))) {
+    $tag = 'H3';
+  }
+  foreach ($items as $delta => $item) {
+    $element[$delta] = array(
+      '#markup' => format_string('<!tag>!text</!tag>', array(
+        '!tag' => strtolower($tag),
+        '!text' => $item['safe_value'],
+        )),
+      );
+  }
+break;</code></pre>
+    </section>
+
+    <section>
+        <img src="images/headline-2.png" />
+    </section>
+
+    <section>
+        <img src="images/headline-3.png" />
+    </section>
+
+    <section>
+        <img src="images/headline-4.png" />
+    </section>
+</section>
+
+<section>
+    <h2>Cool modules</h2>
+    <li><strong>field_multiple_limit:</strong> Provides settings to limit the number of values to display on fields with multiple values.</li>
+    <li><strong>field_formatter_settings: </strong> Provides missing alter hooks for field formatter settings and summaries</li>
+</section>
+
+<section>
+    <section>
+        <img src="images/wonka.jpg" />
+    </section>
+
+    <section>
+        <img src="images/features.jpg" />
+    </section>
+
+    <section>
+<pre><code>//article.features.field_instance.inc
+// Exported field_instance: 'node-article-field_text'
+$field_instances['node-article-field_text'] = array(
+  'bundle' => 'article',
+  'default_value' => NULL,
+  'deleted' => 0,
+  'description' => '',
+  'display' => array(
+    'example_mode' => array(
+      'label' => 'hidden',
+      'module' => 'mymodule',
+      'settings' => array(
+        'headline_type' => 'H1',
+      ),
+      'type' => 'mymodule_headline',
+      'weight' => 1,
+    ),</code></pre>
+    </section>
+</section>
+
+<section>
+    <img src="images/drupal_8.png" />
+    How it will be done?
+</section>
+
+<section>
+    <section>
+        <img src="images/d8vm1.png" />
+         View modes out of the box via UI.
+    </section>
+    <section>
+        <img src="images/d8vm2.png" />
+        Related to entity types.
+    </section>
+    <section>
+<pre><code>// entity.view_mode.node.example_mode.yml
+id: node.example_mode
+label: 'Example mode'
+targetEntityType: node
+status: true
+cache: true
+uuid: f2776549-fc5d-49de-9600-bb8fee1d13d3
+langcode: en
+dependencies:
+  module:
+    - node
+</code></pre>
+        site/default/files/config_{...}/active/
+    </section>
+    <section>
+        After enabling the view mode in Structure -> Content Types -> Article -> Manage display - Custom display settings:
+        <img src="images/d8vm3.png" />
+    </section>
+    <section>
+        entity.view_display.node.article.example_mode.yml
+        <div class="column">
+<pre><code>id: node.article.example_mode
+uuid: 0ed265dc-c5c8-4bbf-a500-bc87ee15c2f0
+targetEntityType: node
+bundle: article
+mode: example_mode
+content:
+  field_image:
+    type: image
+    weight: -1
+    settings:
+      image_style: large
+      image_link: ''
+    label: hidden
+  body:
+    type: text_default
+    weight: 0</code></pre>
+        </div>
+        <div class="column">
+<pre><code>settings: {  }
+    label: hidden
+  field_tags:
+    type: taxonomy_term_reference_link
+    weight: 10
+    settings: {  }
+    label: above
+  comment:
+    type: comment_default
+    weight: 20
+    settings:
+      pager_id: '0'
+    label: hidden
+hidden:
+  langcode: true
+status: true</code></pre>
+        </div>
+    </section>
+</section>
+<section>
+    <section>
+        New thing! <strong>Form modes</strong><br />
+        Instead of hiding rendered fields, you can hide form items :-)
+    </section>
+    <section>
+        <h3>Form modes</h3>
+        <img src="images/d8fm1.png" />
+        admin/config/people/accounts/form-display
+    </section>
+    <section>
+        <h3>Form modes</h3>
+        <img src="images/d8fm2.png" />
+    </section>
+    <section>
+        <h3>Form modes</h3>
+        <img src="images/d8fm2.png" />
+    </section>
+</section>
+
+<section>
+    <section>
+        <h3>Writing a formatter in D8.</h3>
+        Good bye field_formatter hooks! Hello plugins!
+    </section>
+
+    <section>
+        <h3>Writing a formatter in D8.</h3>
+        modules/mymodule structure:
+    <pre><code>
+.
+├── lib
+│   └── Drupal
+│       └── mymodule
+│           └── Plugin
+│               └── Field
+│                   └── FieldFormatter
+│                       └── MymoduleHeadlineFormatter.php
+└── mymodule.info.yml
+
+    </code></pre>
+    </section>
+    <section>
+        MymoduleHeadlineFormatter.php
+<pre><code>/**
+* Plugin implementation of the 'mymodule_headline' formatter.
+*
+* @FieldFormatter(
+*   id = "mymodule_headline",
+*   label = @Translation("Headline"),
+*   field_types = {
+*     "text",
+*     "text_long",
+*   },
+*   edit = {
+*     "editor" = "plain_text"
+*   }
+* )
+*/
+class MymoduleHeadlineFormatter extends FormatterBase {
+</code></pre>
+    </section>
+    <section>
+        <h3>Writing a formatter in D8.</h3>
+        <ul>
+            <li class="fragment">Hooks --> a class.</li>
+            <li class="fragment">hook_field_formatter_info --> annotations (and discovery).</li>
+            <li class="fragment">Method defaultSettings</li>
+            <li class="fragment">hook_field_formatter_view --> viewElements</li>
+            <li class="fragment">hook_formatter_settings_form --> settingsForm</li>
+            <li class="fragment">hook_field_formatter_settings_summary --> settingsSummary.</li>
+            <li class="fragment">$settings['setting'] --> $this->getSetting('setting')</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Writing a formatter in D8.</h3>
+        <img src="images/d8formatter.png" />
+        Similar enought but better!
+    </section>
+
+</section>
+
+<section>
+    <section>
+        <h2>THE END</h2>
+        Special thanks to:
+        <ul>
+            <li><strong>Pablo Lopez @plopesc:</strong> Reviews, suggestions and tons of help, also the addition formatter was get from his session "Get on with Field API" at Druaplcamp Spain 2013 http://2013.drupalcamp.es/d%C3%A9jate-seducir-por-field-api</li>
+            <li><strong>Samuel Solís @estoyausente, Marcelo Tosco @capynet:</strong> tons of reviews.</li>
+            <li><strong>Nestalí Guerrero @nesta_, Jose Luis Bellido @jlbellido, Carmen García @mcgarcia:</strong> Betatesting</li>
+            <li>Drupalcamp organizers and all the sponsors that make this Drupalcamp.</li>
+            <li>All the Drupal community, specialy my Cocomore coworkers, to help me learn and grow everyday!</li>
+        </ul>
+    </section>
+    <section>
+        <h2>THE END</h2>
+        <ul>
+            <li class="fragment"><strong>¡Gracias!</strong></li>
+            <li class="fragment">Let's talk!</li>
+            <li class="fragment">You can find me in IRC, write my by Twitter,  Drupal.org... <strong>jsbalsera</strong></li>
+        </ul>
+    </section>
+</section>
+
+</div>
+
+<div id="drupal">
+    <a href="http://drupal.org"><img src="images/drupal.png" alt="Drupal logo"/></a>
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        width: 1024,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } }
+            // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+            // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+    });
+
+</script>
+<script src="js/custom.js"></script>
+
+</body>
+</html>
