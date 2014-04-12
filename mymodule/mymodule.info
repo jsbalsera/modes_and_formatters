@@ -1,0 +1,6 @@
+name = "mymodule"
+package = "Development"
+description = "Helpers and testing stuff"
+core = "7.x"
+
+version = "7.x-1.0"
