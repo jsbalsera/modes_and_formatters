@@ -73,7 +73,7 @@ class MymoduleHeadlineFormatter extends FormatterBase {
       $elements[$delta] = array(
         '#markup' => format_string('<!tag>!text</!tag>', array(
           '!tag' => strtolower($this->getSetting('headline_type')),
-          '!text' => $item['safe_value'],
+          '!text' => $item->processed,
         )),
       );
     }
