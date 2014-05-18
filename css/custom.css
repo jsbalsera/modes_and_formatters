@@ -25,7 +25,7 @@
 
 #event .text, #event .year {
   float:left;
-  color: #6b6d6d;
+  color: #ff6600;
   font-size: 15px;
   text-transform: uppercase;
   letter-spacing: -0.07em;
@@ -34,7 +34,7 @@
 }
 
 #event .location {
-  color: #1477bd;
+  color: #ff6600;
   font-size: 32px;
   font-weight: bold;
   text-transform: uppercase;
@@ -94,7 +94,7 @@
 }
 
 section strong {
-  color: #1b91ff;
+  color: #ff6600;
 }
 
 .reveal section li img {
@@ -114,3 +114,40 @@ section strong {
     max-height: 500px;
     width:465px;
 }
+
+.reveal section img.d8logo {
+    border: 0;
+    box-shadow: none;
+}
+
+/*#wave {
+    position: fixed;
+    height: 70px;
+    width: 100%;
+    background: #ffffff;
+    bottom:0;
+}
+
+#wave:before {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 70% 70%;
+    width: 100%;
+    height: 700%;
+    background-color: #ffffff;
+    left: -10px;
+    top: -210px;
+}
+
+#wave:after {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 100% 50%;
+    width: 35%;
+    height: 70px;
+    background-color: #ffca66;
+    left: -8px;
+    top: -35px;
+}*/
